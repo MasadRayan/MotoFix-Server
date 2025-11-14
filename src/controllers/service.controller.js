@@ -1,8 +1,16 @@
+const {ObjectId} = require("mongodb");
 const serviceCollection = require("../models/service.model");
 
 exports.getServices = async (req, res) => {
     const result = await serviceCollection.find().toArray();
     res.send(result);
+};
+
+exports.getSingleService = async (req, res) => {
+    const {id} = req.params;
+    const query = {_id : id};
+    const result = await serviceCollection.findOne(query);
+    res.send(result)
 };
 
 exports.createService = async (req, res) => {
