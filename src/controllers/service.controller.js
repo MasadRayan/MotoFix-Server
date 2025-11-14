@@ -10,3 +10,9 @@ exports.createService = async (req, res) => {
     const result = await serviceCollection.insertOne(service);
     res.send(result);
 };
+
+exports.createManyServices = async (req, res) => {
+    const service = req.body;
+    const result = await serviceCollection.insertMany(service);
+    res.send(result);
+};
