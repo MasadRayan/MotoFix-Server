@@ -10,3 +10,5 @@ const addUser = async (req, res) => {
     const result = await usersCollection.insertOne(user);
     res.send(result);
 }
+
+module.exports = {getAllUsers, addUser}
