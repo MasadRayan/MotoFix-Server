@@ -42,4 +42,18 @@ const loginUser = async (req, res) => {
     res.send(user);
 }
 
-module.exports = { getAllUsers, addUser, loginUser };
+const postSocialLogin = async (req, res) => {
+    const user = req.body;
+    const {providerAccountId} = user;
+    // validate user
+    const oldUser = await usersCollection.findOne({providerAccountId: providerAccountId});
+    if (!oldUser) {
+        const result = await usersCollection.insertOne(user);
+        res.send(result);
+    }
+    else {
+        res.send(oldUser);
+    }
+}
+
+module.exports = { getAllUsers, addUser, loginUser, postSocialLogin };
