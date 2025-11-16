@@ -27,9 +27,19 @@ const addUser = async (req, res) => {
 
     const result = await usersCollection.insertOne(user);
     res.send(result);
-
-
-
 }
 
-module.exports = { getAllUsers, addUser }
+const loginUser = async (req, res) => {
+    const {email, password} = req.body;
+    const user = await usersCollection.findOne({email: email});
+    if(!user){
+        return res.send({message: "User not found"});
+    }
+    const isPasswordOk = await bcrypt.compare(password, user.password);
+    if (!isPasswordOk) {
+        return res.send({message: "Invalid password"});
+    }
+    res.send(user);
+}
+
+module.exports = { getAllUsers, addUser, loginUser };
