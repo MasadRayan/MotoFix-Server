@@ -12,6 +12,13 @@ exports.getUserSpecificBooking = async (req, res) => {
     res.send(result);
 }
 
+exports.getSingleBooking = async (req,res) => {
+    const {id} = req.params;
+    const query = {_id : new ObjectId(id)};
+    const result =await bookingsCollection.findOne(query);
+    res.send(result);
+}
+
 exports.createBooking = async (req, res) => {
     const booking = req.body;
     const result = await bookingsCollection.insertOne(booking);
