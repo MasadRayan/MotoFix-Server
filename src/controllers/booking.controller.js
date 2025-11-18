@@ -55,13 +55,28 @@ exports.deletSingleBooking = async (req, res) => {
 }
 
 exports.updateSingleBooking = async (req, res) => {
-    const {id} = req.params;
-    const updatedBooking = req.body;
-    const query = { _id : new ObjectId(id) };
+    const { id } = req.params;
+    const { email, bookingData } = req.body;
+    const query = { _id: new ObjectId(id) };
+
+
+    if (!email) {
+        return res.status(400).send({ message: "Email is required" });
+    }
+
+    const existingBooking = await bookingsCollection.findOne(query);
+    if (!existingBooking) {
+        return res.status(404).send({ message: "Booking not found" });
+    }
+
+    if (existingBooking.email !== email) {
+        return res.status(403).send({ message: "Unauthorized: This is not your booking" });
+    }
+
     const filter = {
-        $set: updatedBooking
+        $set: bookingData
     };
-    const options  ={
+    const options = {
         upsert: true
     }
     const result = await bookingsCollection.updateOne(query, filter, options);
