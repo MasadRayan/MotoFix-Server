@@ -6,6 +6,20 @@ const getAllUsers = async (req, res) => {
     res.send(result);
 }
 
+const getUserRoale = async (req, res) => {
+    const {email} = req.params;
+    
+    if (!email) {
+        return res.status(400).send({ message: "Email is required" });
+    }
+
+    const getUser = await usersCollection.findOne({ email: email });
+    if (!getUser) {
+        return res.status(404).send({ message: "User not found" });
+    }
+    res.send({ role: getUser.role });
+}
+
 const addUser = async (req, res) => {
     const user = req.body;
     const { name, email, password } = user;
@@ -56,4 +70,5 @@ const postSocialLogin = async (req, res) => {
     }
 }
 
-module.exports = { getAllUsers, addUser, loginUser, postSocialLogin };
+
+module.exports = { getAllUsers, addUser, loginUser, postSocialLogin, getUserRoale };
