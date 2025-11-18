@@ -3,8 +3,8 @@ const express = require("express");
 const router = express.Router();
 
 router.get("/", getAllBooking);
-router.get("/:email", getUserSpecificBooking);
-router.get("/:id", getSingleBooking);
+router.get("/user/:email", getUserSpecificBooking);
+router.get("/single/:id", getSingleBooking);
 router.post("/", createBooking);
 router.delete("/:id", deletSingleBooking)
 

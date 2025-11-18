@@ -12,10 +12,10 @@ exports.getUserSpecificBooking = async (req, res) => {
     res.send(result);
 }
 
-exports.getSingleBooking = async (req,res) => {
-    const {id} = req.params;
-    const query = {_id : new ObjectId(id)};
-    const result =await bookingsCollection.findOne(query);
+exports.getSingleBooking = async (req, res) => {
+    const { id } = req.params;
+    const query = { _id: new ObjectId(id) };
+    const result = await bookingsCollection.findOne(query);
     res.send(result);
 }
 
@@ -52,4 +52,18 @@ exports.deletSingleBooking = async (req, res) => {
         console.log(error);
         res.status(500).send({ message: "Internal server error" });
     }
+}
+
+exports.updateSingleBooking = async (req, res) => {
+    const {id} = req.params;
+    const updatedBooking = req.body;
+    const query = { _id : new ObjectId(id) };
+    const filter = {
+        $set: updatedBooking
+    };
+    const options  ={
+        upsert: true
+    }
+    const result = await bookingsCollection.updateOne(query, filter, options);
+    res.send(result);
 }
