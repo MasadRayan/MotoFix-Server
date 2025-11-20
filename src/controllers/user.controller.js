@@ -1,3 +1,4 @@
+const { ObjectId } = require("mongodb");
 const usersCollection = require("../models/user.model");
 const bcrypt = require("bcryptjs");
 
@@ -84,5 +85,32 @@ const postSocialLogin = async (req, res) => {
     }
 }
 
+const makeAdmin = async (req, res) => {
+    const {email} = req.params;
+    const {userID}  =req.body;
+
+    if (!email) {
+        return res.status(400).send({ message: "Email is required" });
+    }
+
+    const existingUser = await usersCollection.findOne({ email: email });
+    if (!existingUser) {
+        return res.status(404).send({ message: "User not found" });
+    }
+
+    if (existingUser.role !== "admin") {
+        return res.status(403).send({ message: "Unauthorized" });
+    }
+
+    const query = { _id: new ObjectId(userID) };
+    const updateDoc = {
+        $set: {
+            role: "admin"
+        }
+    };
+    const options = { upsert: true };
+    const result = await usersCollection.updateOne(query, updateDoc, options);
+    res.send(result);
+}
 
 module.exports = { getAllUsers, addUser, loginUser, postSocialLogin, getUserRoale };
