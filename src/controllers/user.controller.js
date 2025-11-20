@@ -113,4 +113,4 @@ const makeAdmin = async (req, res) => {
     res.send(result);
 }
 
-module.exports = { getAllUsers, addUser, loginUser, postSocialLogin, getUserRoale };
+module.exports = { getAllUsers, addUser, loginUser, postSocialLogin, getUserRoale , makeAdmin};
