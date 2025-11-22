@@ -46,7 +46,7 @@ exports.createManyServices = async (req, res) => {
 };
 
 exports.deleteService = async (req, res) => {
-    const { id, email } = req.params;
+    const { email, id } = req.params;
     const query = { email: email };
     if (!email) {
         return res.status(400).send({ message: "Email is required" });
@@ -60,7 +60,7 @@ exports.deleteService = async (req, res) => {
     if (!isAdmin) {
         return res.status(403).send({ message: "Unauthorized" });
     }
-    const serviceQuery = { _id : new ObjectId(id)};
+    const serviceQuery = { _id : id };
     const result = await serviceCollection.deleteOne(serviceQuery);
     res.send(result);
 }
