@@ -1,4 +1,4 @@
-const {ObjectId} = require("mongodb");
+const { ObjectId } = require("mongodb");
 const serviceCollection = require("../models/service.model");
 const usersCollection = require("../models/user.model");
 
@@ -8,15 +8,15 @@ exports.getServices = async (req, res) => {
 };
 
 exports.getSingleService = async (req, res) => {
-    const {id} = req.params;
-    const query = {_id : id};
+    const { id } = req.params;
+    const query = { _id: id };
     const result = await serviceCollection.findOne(query);
     res.send(result)
 };
 
 exports.getAllServiceForAdmin = async (req, res) => {
-    const {email} = req.params;
-    const query = {email:email};
+    const { email } = req.params;
+    const query = { email: email };
     if (!email) {
         return res.status(400).send({ message: "Email is required" });
     }
@@ -44,3 +44,23 @@ exports.createManyServices = async (req, res) => {
     const result = await serviceCollection.insertMany(service);
     res.send(result);
 };
+
+exports.deleteService = async (req, res) => {
+    const { id, email } = req.params;
+    const query = { email: email };
+    if (!email) {
+        return res.status(400).send({ message: "Email is required" });
+    }
+
+    const userExists = await usersCollection.findOne(query);
+    if (!userExists) {
+        return res.status(404).send({ message: "User not found" });
+    }
+    const isAdmin = userExists.role === "admin";
+    if (!isAdmin) {
+        return res.status(403).send({ message: "Unauthorized" });
+    }
+    const serviceQuery = { _id : new ObjectId(id)};
+    const result = await serviceCollection.deleteOne(serviceQuery);
+    res.send(result);
+}
