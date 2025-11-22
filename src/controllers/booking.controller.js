@@ -1,5 +1,6 @@
 const bookingsCollection = require("../models/booking.model");
 const { ObjectId } = require("mongodb");
+const usersCollection = require("../models/user.model");
 
 exports.getAllBooking = async (req, res) => {
     const result = await bookingsCollection.find().toArray();
@@ -16,6 +17,24 @@ exports.getSingleBooking = async (req, res) => {
     const { id } = req.params;
     const query = { _id: new ObjectId(id) };
     const result = await bookingsCollection.findOne(query);
+    res.send(result);
+}
+
+exports.getBookingForAdmin = async (req, res) => {
+    const { email } = req.params;
+    if (!email) {
+        return res.status(400).send({ message: "Email is required" });
+    }
+    const query = { email: email };
+    const existingUser = await usersCollection.findOne(query);
+    if (!existingUser) {
+        return res.status(404).send({ message: "User not found" });
+    }
+    const isAdmin = existingUser.role === "admin";
+    if (!isAdmin) {
+        return res.status(403).send({ message: "Unauthorized" });
+    }
+    const result = await bookingsCollection.find().toArray();
     res.send(result);
 }
 
