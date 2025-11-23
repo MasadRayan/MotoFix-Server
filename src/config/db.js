@@ -10,9 +10,9 @@ const client = new MongoClient(process.env.MONGO_URI, {
 
 async function connectDB() {
     try {
-        await client.connect();
-        await client.db("admin").command({ ping: 1 });
-        console.log("Pinged your deployment. You successfully connected to MongoDB!");
+        // await client.connect();
+        // await client.db("admin").command({ ping: 1 });
+        // console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } catch (error) {
         console.log("DB connection failed:", error);
     }

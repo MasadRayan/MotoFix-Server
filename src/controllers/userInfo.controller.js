@@ -4,14 +4,14 @@ const usersCollection = require("../models/user.model");
 // Get user role
 exports.getUserRole = async (req, res) => {
     const { email } = req.params;
-    
+
     if (!email) {
         return res.status(400).send({ message: "Email is required" });
     }
 
     try {
         const user = await usersCollection.findOne({ email: email });
-        
+
         if (!user) {
             return res.status(404).send({ message: "User not found" });
         }
@@ -36,36 +36,36 @@ exports.getUserOverview = async (req, res) => {
 
     try {
         const user = await usersCollection.findOne({ email: email });
-        
+
         if (!user) {
             return res.status(404).send({ message: "User not found" });
         }
 
         // Get user's bookings
         const totalBookings = await bookingsCollection.countDocuments({ email: email });
-        
-        const pendingBookings = await bookingsCollection.countDocuments({ 
-            email: email, 
-            status: "Pending" 
+
+        const pendingBookings = await bookingsCollection.countDocuments({
+            email: email,
+            status: "Pending"
         });
-        
-        const acceptedBookings = await bookingsCollection.countDocuments({ 
-            email: email, 
-            status: "Accepted" 
+
+        const acceptedBookings = await bookingsCollection.countDocuments({
+            email: email,
+            status: "Accepted"
         });
-        
-        const rejectedBookings = await bookingsCollection.countDocuments({ 
-            email: email, 
-            status: "Rejected" 
+
+        const rejectedBookings = await bookingsCollection.countDocuments({
+            email: email,
+            status: "Rejected"
         });
 
         // Calculate total spent (only accepted bookings)
         const totalSpentAgg = await bookingsCollection.aggregate([
-            { 
-                $match: { 
-                    email: email, 
-                    status: "Accepted" 
-                } 
+            {
+                $match: {
+                    email: email,
+                    status: "Accepted"
+                }
             },
             {
                 $group: {
@@ -80,7 +80,7 @@ exports.getUserOverview = async (req, res) => {
         // Get recent bookings (last 5)
         const recentBookings = await bookingsCollection
             .find({ email: email })
-            .sort({ createdAt: -1 })
+            .sort({ createdAt: 1 })
             .limit(5)
             .toArray();
 
@@ -89,9 +89,7 @@ exports.getUserOverview = async (req, res) => {
             { $match: { email: email } },
             {
                 $group: {
-                    _id: {
-                        $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }
-                    },
+                    _id: "$date",  
                     total: { $sum: 1 }
                 }
             },

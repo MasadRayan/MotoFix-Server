@@ -45,16 +45,14 @@ exports.getAdminOverview = async (req, res) => {
         today.setHours(0, 0, 0, 0);
 
         const todaysBookings = await bookingsCollection.countDocuments({
-            createdAt: { $gte: today }
+            date: { $gte: today }
         });
 
 
         const last7Days = await bookingsCollection.aggregate([
             {
                 $group: {
-                    _id: {
-                        $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }
-                    },
+                    _id: "$date",  
                     total: { $sum: 1 }
                 }
             },
