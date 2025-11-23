@@ -101,3 +101,34 @@ exports.updateSingleBooking = async (req, res) => {
     const result = await bookingsCollection.updateOne(query, filter, options);
     res.send(result);
 }
+
+exports.acceptBookingByAdmin = async (req, res) => {
+    const { id, email } = req.params;
+    const userQuery = { email: email };
+    if (!email || !id) {
+        return res.status(400).send({ message: "Email and ID are required" });
+    }
+
+    const existUser = await usersCollection.findOne(userQuery);
+    if (!existUser) {
+        return res.status(404).send({ message: "User not found" });
+    }
+
+    const isAdmin = existUser.role === "admin";
+    if (!isAdmin) {
+        return res.status(403).send({ message: "Unauthorized" });
+    }
+
+    const bookingQuery = { _id: new ObjectId(id) };
+    const filter = {
+        $set:
+        {
+            status: "accepted"
+        }
+    };
+    const options = {
+        upsert: true
+    };
+    const result = await bookingsCollection.updateOne(bookingQuery, filter, options);
+    res.send(result);
+}
