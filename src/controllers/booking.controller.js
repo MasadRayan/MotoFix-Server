@@ -102,8 +102,9 @@ exports.updateSingleBooking = async (req, res) => {
     res.send(result);
 }
 
-exports.acceptBookingByAdmin = async (req, res) => {
+exports.updateBookingStatusByAdmin = async (req, res) => {
     const { id, email } = req.params;
+    const {status} = req.body;
     const userQuery = { email: email };
     if (!email || !id) {
         return res.status(400).send({ message: "Email and ID are required" });
@@ -123,7 +124,7 @@ exports.acceptBookingByAdmin = async (req, res) => {
     const filter = {
         $set:
         {
-            status: "accepted"
+            status: status
         }
     };
     const options = {
