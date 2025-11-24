@@ -10,3 +10,5 @@ async function handleChatbotRequest(req, res) {
     const response = await generateResponse(question);
     res.send({ response });
 }
+
+module.exports = { handleChatbotRequest };
