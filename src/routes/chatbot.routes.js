@@ -1,4 +1,4 @@
-const {handleChatbotRequest} = require('../services/chatbot.service');
+const {handleChatbotRequest} = require('../controllers/chatbot.controller');
 
 const express = require('express');
 const router = express.Router();
