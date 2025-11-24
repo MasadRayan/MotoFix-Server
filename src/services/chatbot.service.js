@@ -1,6 +1,6 @@
 const { genAI } = require("../config/gemini.config");
 
-async function generateResponse(prompt) {
+async function generateResponse(question) {
 
     try {
         const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
@@ -60,3 +60,5 @@ async function generateResponse(prompt) {
         return "Something went wrong with the chatbot.";
     }
 }
+
+module.exports = { generateResponse };
